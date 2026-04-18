@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { Strategy, StrategyView } from './types';
+import type { Strategy, StrategyView, DealThresholds } from './types';
 import { Nav } from './components/Nav';
 import { generateStrikes } from './utils/strikeGenerator';
 import { buildStrikeRow } from './utils/calculations';
@@ -8,13 +8,18 @@ import { VolatilityInput } from './components/VolatilityInput';
 import { StrategyToggle } from './components/StrategyToggle';
 import { OptionsTable } from './components/OptionsTable';
 import { InfoBanner } from './components/InfoBanner';
+import { DealThresholdsPanel } from './components/DealThresholds';
 
 const LS = {
   price: 'opt-price',
   vol: 'opt-vol',
   strategy: 'opt-strategy',
   overrides: 'opt-overrides',
+  showAdvanced: 'opt-show-advanced',
+  dealThresholds: 'opt-deal-thresholds',
 } as const;
+
+const DEFAULT_THRESHOLDS: DealThresholds = { minAnnualReturnPct: 15, minPopPct: 75 };
 
 function loadInitial() {
   const price = parseFloat(localStorage.getItem(LS.price) ?? '30');
@@ -33,11 +38,23 @@ function loadInitial() {
     // ignore corrupt data
   }
 
+  const showAdvanced = localStorage.getItem(LS.showAdvanced) === 'true';
+
+  let dealThresholds = DEFAULT_THRESHOLDS;
+  try {
+    const raw = localStorage.getItem(LS.dealThresholds);
+    if (raw) dealThresholds = JSON.parse(raw) as DealThresholds;
+  } catch {
+    // ignore corrupt data
+  }
+
   return {
     price: isNaN(price) || price <= 0 ? 30 : price,
     vol: isNaN(vol) ? 25 : Math.max(10, Math.min(80, vol)),
     strategy,
     overrides,
+    showAdvanced,
+    dealThresholds,
   };
 }
 
@@ -46,6 +63,10 @@ export default function App() {
   const [volatility, setVolatility] = useState(() => loadInitial().vol);
   const [strategyView, setStrategyView] = useState<StrategyView>(() => loadInitial().strategy);
   const [overrides, setOverrides] = useState<Map<string, number>>(() => loadInitial().overrides);
+  const [showAdvanced, setShowAdvanced] = useState(() => loadInitial().showAdvanced);
+  const [dealThresholds, setDealThresholds] = useState<DealThresholds>(
+    () => loadInitial().dealThresholds,
+  );
 
   function persist<T>(key: string, value: T) {
     localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
@@ -64,6 +85,19 @@ export default function App() {
   function handleStrategy(s: StrategyView) {
     setStrategyView(s);
     persist(LS.strategy, s);
+  }
+
+  function handleToggleAdvanced() {
+    setShowAdvanced((prev) => {
+      const next = !prev;
+      persist(LS.showAdvanced, next);
+      return next;
+    });
+  }
+
+  function handleThresholds(t: DealThresholds) {
+    setDealThresholds(t);
+    persist(LS.dealThresholds, t);
   }
 
   const handlePremiumChange = useCallback(
@@ -100,14 +134,41 @@ export default function App() {
         <PriceInput value={currentPrice} onChange={handlePrice} />
         <VolatilityInput volatility={volatility} onChange={handleVolatility} />
         <StrategyToggle value={strategyView} onChange={handleStrategy} />
+        <div className="advanced-toggle-wrap">
+          <span className="label-text">Advanced Metrics</span>
+          <button
+            className={`advanced-toggle ${showAdvanced ? 'active' : ''}`}
+            onClick={handleToggleAdvanced}
+          >
+            {showAdvanced ? 'Hide' : 'Show'} PoP, EV &amp; More
+          </button>
+        </div>
       </div>
+
+      {showAdvanced && (
+        <div className="advanced-bar">
+          <DealThresholdsPanel thresholds={dealThresholds} onChange={handleThresholds} />
+        </div>
+      )}
 
       <main className="tables">
         {strategyView !== 'cc' && (
-          <OptionsTable rows={buildRows('csp')} strategy="csp" onPremiumChange={handlePremiumChange} />
+          <OptionsTable
+            rows={buildRows('csp')}
+            strategy="csp"
+            onPremiumChange={handlePremiumChange}
+            showAdvanced={showAdvanced}
+            dealThresholds={dealThresholds}
+          />
         )}
         {strategyView !== 'csp' && (
-          <OptionsTable rows={buildRows('cc')} strategy="cc" onPremiumChange={handlePremiumChange} />
+          <OptionsTable
+            rows={buildRows('cc')}
+            strategy="cc"
+            onPremiumChange={handlePremiumChange}
+            showAdvanced={showAdvanced}
+            dealThresholds={dealThresholds}
+          />
         )}
       </main>
     </div>

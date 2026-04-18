@@ -284,6 +284,122 @@ body {
   .options-table tbody td { padding: 8px 10px; }
 }
 
+/* ── Advanced toggle ── */
+.advanced-toggle-wrap { display: flex; flex-direction: column; }
+.advanced-toggle {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.12s;
+  color: var(--text);
+  white-space: nowrap;
+}
+.advanced-toggle:hover { border-color: var(--primary); color: var(--primary); }
+.advanced-toggle.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+/* ── Advanced bar (thresholds) ── */
+.advanced-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 24px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+
+.deal-thresholds-panel { display: flex; flex-direction: column; gap: 10px; }
+.threshold-fields { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+.threshold-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text);
+}
+.threshold-input-wrap { display: flex; align-items: center; gap: 4px; }
+.threshold-input-wrap input {
+  width: 60px;
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: 13px;
+  text-align: right;
+  outline: none;
+}
+.threshold-input-wrap input:focus { border-color: var(--primary); }
+.threshold-unit { font-size: 12px; color: var(--text-muted); }
+
+/* ── Advanced columns ── */
+.options-table thead th.adv-col {
+  background: #f0f4ff;
+  border-left: 1px solid var(--border);
+}
+.options-table tbody td.adv-col {
+  border-left: 1px solid #f1f5f9;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.ev-pos { color: var(--otm) !important; }
+.ev-neg { color: var(--itm) !important; }
+
+/* ── Good Deal row ── */
+.row-good-deal { background: #f0fdf4 !important; }
+.row-good-deal:hover { background: #dcfce7 !important; }
+.row-good-deal.row-atm { background: #d1fae5 !important; }
+
+.deal-col { text-align: center !important; }
+.deal-badge {
+  color: #16a34a;
+  font-size: 14px;
+  font-weight: 700;
+}
+.deal-none { color: #d1d5db; font-size: 12px; }
+
+/* ── Tooltip ── */
+.tooltip-wrap {
+  position: relative;
+  display: inline-block;
+  margin-left: 3px;
+  vertical-align: middle;
+}
+.tooltip-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #d1d5db;
+  color: #4b5563;
+  font-size: 9px;
+  font-weight: 700;
+  cursor: help;
+  user-select: none;
+  transition: background 0.12s, color 0.12s;
+}
+.tooltip-trigger:hover { background: var(--primary); color: #fff; }
+.tooltip-box {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  white-space: normal;
+  width: 240px;
+  line-height: 1.5;
+  z-index: 9999;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
 /* ════════════════════════════════════════════
    SITE NAV
 ════════════════════════════════════════════ */

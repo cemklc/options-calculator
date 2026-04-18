@@ -2,6 +2,11 @@ export type Strategy = 'csp' | 'cc';
 export type StrategyView = 'csp' | 'cc' | 'both';
 export type Moneyness = 'ITM' | 'ATM' | 'OTM';
 
+export interface DealThresholds {
+  minAnnualReturnPct: number;
+  minPopPct: number;
+}
+
 export interface StrikeRow {
   strategy: Strategy;
   strike: number;
@@ -15,4 +20,12 @@ export interface StrikeRow {
   capitalRequired: number;
   breakEven: number;
   maxProfit: number;
+  // Phase 2
+  pop: number;
+  ev: number;
+  premiumPerDay: number;
+  returnIfAssigned: number;
+  marginOfSafety: number;
+  maxLoss: number;
+  riskRewardRatio: number;
 }

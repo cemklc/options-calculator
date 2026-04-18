@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { Strategy, StrategyView } from './types';
+import { Nav } from './components/Nav';
 import { generateStrikes } from './utils/strikeGenerator';
 import { buildStrikeRow } from './utils/calculations';
 import { PriceInput } from './components/PriceInput';
@@ -87,6 +88,7 @@ export default function App() {
 
   return (
     <div className="app">
+      <Nav page="calculator" />
       <header className="app-header">
         <h1>Options Premium Calculator</h1>
         <p className="subtitle">Cash-Secured Puts &amp; Covered Calls · 30-day Euronext options</p>

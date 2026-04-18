@@ -63,7 +63,14 @@ export function OptionsTable({ rows, strategy, onPremiumChange }: Props) {
                 <td className="num">{fmt(row.annualReturnPct, 1)}%</td>
                 <td className="num">{fmtCapital(row.capitalRequired)}</td>
                 <td className="num">{fmt(row.breakEven)}</td>
-                <td className="num">{fmt(row.maxProfit)}</td>
+                <td className="num">
+                  <strong>{fmt(row.maxProfit)}</strong>
+                  {strategy === 'cc' && (
+                    <div className="max-profit-breakdown">
+                      {fmt(row.effectivePremium * 100)} + {fmt(row.maxProfit - row.effectivePremium * 100)}
+                    </div>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
